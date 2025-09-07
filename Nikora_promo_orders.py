@@ -203,7 +203,7 @@ with left:
             for wd in ["Monday","Tuesday","Wednesday","Thursday","Friday","Unassigned"]:
                 if wd in splits:
                     geo = GEORGIAN_DAY.get(wd, wd)
-                    fname = f"ნიკორა, {geo}, {date_str}.xlsx" if wd != "Unassigned" else f"ნიკორა, გაურკვეველი დღე, {date_str}.xlsx"
+                    fname = f"ნიკორა, სააკციო, {geo}, {date_str}.xlsx" if wd != "Unassigned" else f"ნიკორა, გაურკვეველი დღე, {date_str}.xlsx"
                     data = export_excel_bytes(splits[wd])
                     st.download_button(label=f"Download {wd} ({geo})", data=data, file_name=fname, mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
 
