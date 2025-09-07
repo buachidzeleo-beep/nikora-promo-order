@@ -213,10 +213,10 @@ with left:
                 for wd in ["Monday","Tuesday","Wednesday","Thursday","Friday","Unassigned"]:
                     if wd in splits:
                         geo = GEORGIAN_DAY.get(wd, wd)
-                        fname = f"ნიკორა, {geo}, {date_str}.xlsx" if wd != "Unassigned" else f"ნიკორა, გაურკვეველი დღე, {date_str}.xlsx"
+                        fname = f"ნიკორა, სააკციო, {geo}, {date_str}.xlsx" if wd != "Unassigned" else f"ნიკორა, გაურკვეველი დღე, {date_str}.xlsx"
                         zf.writestr(fname, export_excel_bytes(splits[wd]))
             zip_bio.seek(0)
-            st.download_button(label="Download ZIP (all files)", data=zip_bio.getvalue(), file_name=f"ნიკორა, დაგრუპული დღეებით, {date_str}.zip", mime="application/zip")
+            st.download_button(label="Download ZIP (all files)", data=zip_bio.getvalue(), file_name=f"ნიკორა, სააკციო, დაგრუპული დღეებით, {date_str}.zip", mime="application/zip")
 
 with right:
     st.subheader("Notes")
