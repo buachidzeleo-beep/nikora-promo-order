@@ -21,6 +21,7 @@ Default local files (same folder as this .py or ./config/):
 
 Extra rule (export):
 - Before export, drop columns if present: "Дата документа", "მაღაზიის მისამართი"
+- NEW: Move first column to last position before export.
 
 Run:
     pip install streamlit pandas openpyxl XlsxWriter
@@ -134,6 +135,15 @@ def try_load_local(filename_candidates: List[str]) -> pd.DataFrame:
                 continue
     return pd.DataFrame()
 
+def move_first_col_to_last(df: pd.DataFrame) -> pd.DataFrame:
+    """Move the first column to the last position."""
+    if df.shape[1] <= 1:
+        return df
+    cols = list(df.columns)
+    first = cols[0]
+    new_order = cols[1:] + [first]
+    return df[new_order]
+
 # ----------------------------
 # App UI
 # ----------------------------
@@ -225,12 +235,15 @@ with left:
             splits: Dict[str, pd.DataFrame] = {}
             for wd in WEEKDAYS_EN:
                 part = merged[merged["__Weekday__"] == wd].drop(columns=cols_to_remove, errors="ignore")
+                part = move_first_col_to_last(part)  # NEW CHANGE
                 splits[wd] = part
 
             # Unassigned
             unknown_mask = merged["__Weekday__"].isna() | (merged["__Weekday__"] == "")
             if unknown_mask.sum() > 0:
-                splits["Unassigned"] = merged[unknown_mask].drop(columns=cols_to_remove, errors="ignore")
+                part = merged[unknown_mask].drop(columns=cols_to_remove, errors="ignore")
+                part = move_first_col_to_last(part)  # NEW CHANGE
+                splits["Unassigned"] = part
                 st.warning(f"{int(unknown_mask.sum())} rows have no weekday in schedule — kept in 'Unassigned'.")
 
             # Summary
@@ -277,4 +290,5 @@ with right:
     - **Auto-loads** `shop_schedule.xlsx` and `barcode_map.xlsx` from the app folder or `./config/`.
     - Optional overrides allow one-off replacement of schedule/map via UI.
     - **Export** removes columns if present: "Дата документа", "მაღაზიის მისამართი".
+    - **New Rule:** The first column is moved to the last position in the exported files.
     """)
